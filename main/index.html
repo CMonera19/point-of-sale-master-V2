@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventory Management System</title>
+  <script>
+    if (sessionStorage.getItem("loggedIn") !== "true") {
+        window.location.href = "login.html";
+    }
+  </script>
+
+  <link rel="stylesheet" href="../main/css/signup.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>Inventory System</h2>
+    <a href="../main/index.html">Home</a>
+    <a href="../main/user.html">User</a>
+    <a href="../main/suppliers.html">Suppliers</a>
+    <a href="../main/items_prices.html">Items/Prices</a>
+    <a href="../main/dashboard.html">Dashboard</a>
+    <a href="../main/products.html">Products</a>
+    <a href="../main/reports.html">Reports</a>
+    <button onclick="logout()" class="logout-btn">🚪 Logout</button>
+  </div>
+
+  <div class="main-content">
+    <div id="home" class="section-container">
+      <div class="hero">
+        <h1>Welcome to <span>Inventory Management System</span></h1>
+        <p>Manage your stock efficiently and effectively with our user-friendly interface.</p>
+        <button onclick="showDashboard()">View Dashboard</button>
+      </div>
+
+      <div class="stock-summary">
+        <h2>Stock Overview</h2>
+        <div class="dashboard-container">
+          <div class="dashboard-card">
+            <h3>Total Products</h3>
+            <p id="totalProducts">0</p>
+          </div>
+          <div class="dashboard-card">
+            <h3>Total Inventory Value</h3>
+            <p id="totalValue">$0.00</p>
+          </div>
+          <div class="dashboard-card low-stock">
+            <h3>Low Stock Items</h3>
+            <p id="lowStockCount">0</p>
+          </div>
+        </div>
+        <h3>Recent Stock Updates</h3>
+        <table border="1">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Stock Count</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody id="recentStockList"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function logout() {
+      sessionStorage.removeItem("loggedIn");
+      window.location.href = "login.html";
+    }
+
+    function showDashboard() {
+      window.location.href = "dashboard.html";
+    }
+
+    let products = JSON.parse(localStorage.getItem("inventoryItems")) || [];
+
+    function updateHomeStockSummary() {
+      document.getElementById('totalProducts').innerText = products.length;
+      let totalValue = products.reduce((sum, p) => sum + (p.stockCount * p.price), 0);
+      document.getElementById('totalValue').innerText = `$${totalValue.toFixed(2)}`;
+      let lowStockCount = products.filter(p => p.stockCount < 15).length;
+      document.getElementById('lowStockCount').innerText = lowStockCount;
+      updateRecentStock();
+    }
+
+    function updateRecentStock() {
+      let recentStockList = document.getElementById('recentStockList');
+      recentStockList.innerHTML = "";
+      products.slice(-5).forEach(product => {
+        let row = `<tr>
+          <td>${product.name}</td>
+          <td>${product.stockCount}</td>
+          <td>$${product.price.toFixed(2)}</td>
+        </tr>`;
+        recentStockList.innerHTML += row;
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", updateHomeStockSummary);
+  </script>
+</body>
+</html>

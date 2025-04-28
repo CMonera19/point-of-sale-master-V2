@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
+    <link rel="stylesheet" href="../main/css/products.css">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Inventory System</h2>
+        <a href="../main/index.html">Home</a>
+        <a href="../main/user.html">User</a>
+        <a href="../main/suppliers.html">Suppliers</a>
+        <a href="../main/items_prices.html">Items/Prices</a>
+        <a href="../main/dashboard.html">Dashboard</a>
+        <a href="../main/products.html">Products</a>
+        <a href="../main/reports.html">Reports</a>
+        <button onclick="logout()" class="logout-btn">🚪 Logout</button>
+    </div>
+
+    <div class="section-container">
+        <h2>📦 Product List</h2>
+        <input type="text" id="searchBox" placeholder="Search for products..." onkeyup="searchItems()">
+        
+        <table class="products-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Item Name</th>
+                    <th>Category</th>
+                    <th>Quantity</th>
+                    <th>Stock Count</th> <!-- Added Stock Count Column -->
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody id="productList">
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function logout() {
+            sessionStorage.removeItem("loggedIn");
+            window.location.href = "login.html";
+        }
+
+        function loadItems() {
+            const storedItems = JSON.parse(localStorage.getItem("inventoryItems")) || [];
+            const tableBody = document.getElementById("productList");
+            tableBody.innerHTML = "";
+            storedItems.forEach((item, index) => {
+                const row = `<tr>
+                                <td>${index + 1}</td>
+                                <td>${item.name}</td>
+                                <td>${item.category}</td>
+                                <td>${item.quantity}</td>
+                                <td>${item.stockCount || 0}</td> <!-- Display Stock Count -->
+                                <td>₱${item.price}</td>
+                            </tr>`;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        function searchItems() {
+            const searchValue = document.getElementById("searchBox").value.toLowerCase();
+            const rows = document.querySelectorAll("#productList tr");
+            rows.forEach(row => {
+                const itemName = row.children[1].textContent.toLowerCase();
+                row.style.display = itemName.includes(searchValue) ? "" : "none";
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", loadItems);
+    </script>
+</body>
+</html>

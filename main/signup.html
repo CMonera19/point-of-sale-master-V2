@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="../main/css/signup.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to right, #43cea2, #185a9d);
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 350px;
+        }
+
+        h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #43cea2;
+            box-shadow: 0px 0px 5px rgba(67, 206, 162, 0.5);
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #43cea2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #36a387;
+        }
+
+        p {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        a {
+            color: #185a9d;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Create an Account</h2>
+        <form action="register.php" method="POST">
+            <input type="text" name="username" placeholder="Enter username" required>
+            <input type="email" name="email" placeholder="Enter email" required>
+            <input type="password" name="password" placeholder="Enter password" required>
+            <button type="submit">Sign Up</button>
+        </form>
+        <p>Already have an account? <a href="login.html">Log in</a></p>
+    </div>
+</body>
+</html>

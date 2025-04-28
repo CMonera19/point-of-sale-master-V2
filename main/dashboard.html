@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script>
+      if (sessionStorage.getItem("loggedIn") !== "true") {
+          window.location.href = "login.html";
+      }
+    </script>
+    <link rel="stylesheet" href="../main/css/dashboard.css">
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>Inventory System</h2>
+    <a href="../main/index.html">Home</a>
+    <a href="../main/user.html">User</a>
+    <a href="../main/suppliers.html">Suppliers</a>
+    <a href="../main/items_prices.html">Items/Prices</a>
+    <a href="../main/dashboard.html">Dashboard</a>
+    <a href="../main/products.html">Products</a>
+    <a href="../main/reports.html">Reports</a>
+    <button onclick="logout()" class="logout-btn">🚪 Logout</button>
+</div>
+
+<div id="dashboard" class="section-container">
+    <h2>📊 Inventory Dashboard</h2>
+    
+    <div class="dashboard-cards">
+        <div class="dashboard-card">
+            <h3>📦 Total Products</h3>
+            <p id="totalProducts">0</p>
+        </div>
+        <div class="dashboard-card">
+            <h3>💰 Total Inventory Value</h3>
+            <p id="totalValue">0.00</p>
+        </div>
+        <div class="dashboard-card low-stock">
+            <h3>⚠️ Low Stock Items</h3>
+            <p id="lowStockCount">0</p>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <h3>📈 Stock Overview</h3>
+        <canvas id="stockChart"></canvas>
+    </div>
+</div>
+
+<script>
+function logout() {
+    sessionStorage.removeItem("loggedIn");
+    window.location.href = "login.html";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    let items = JSON.parse(localStorage.getItem("inventoryItems")) || []; // Fetch stored items
+
+    function updateDashboard() {
+        const totalProducts = items.length;
+        const totalValue = items.reduce((sum, item) => sum + (item.price * item.stockCount), 0).toFixed(2); // FIXED: Now using stockCount
+        const lowStockItems = items.filter(item => item.stockCount < 15);
+        const lowStockCount = lowStockItems.length;
+
+        console.log("Low stock items:", lowStockItems);
+        console.log("Low stock count:", lowStockCount);
+
+        document.getElementById("totalProducts").innerText = totalProducts;
+        document.getElementById("totalValue").innerText = totalValue;
+        document.getElementById("lowStockCount").innerText = lowStockCount;
+    }
+
+    function updateChart() {
+        const ctx = document.getElementById("stockChart").getContext("2d");
+        new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: items.map(item => item.name),
+                datasets: [{
+                    label: "Stock Quantity",
+                    data: items.map(item => item.stockCount),
+                    backgroundColor: "rgba(54, 162, 235, 0.6)",
+                    borderColor: "rgba(54, 162, 235, 1)",
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+
+    updateDashboard();
+    updateChart();
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</body>
+</html>

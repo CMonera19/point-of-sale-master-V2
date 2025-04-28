@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports</title>
+    <script>
+      if (sessionStorage.getItem("loggedIn") !== "true") {
+          window.location.href = "login.html";
+      }
+    </script>
+    <link rel="stylesheet" href="../main/css/reports.css">
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>Inventory System</h2>
+    <a href="../main/index.html">Home</a>
+    <a href="../main/user.html">User</a>
+    <a href="../main/suppliers.html">Suppliers</a>
+    <a href="../main/items_prices.html">Items/Prices</a>
+    <a href="../main/dashboard.html">Dashboard</a>
+    <a href="../main/products.html">Products</a>
+    <a href="../main/reports.html">Reports</a>
+    <button onclick="logout()" class="logout-btn">🚪 Logout</button>
+</div>
+
+<div id="reports" class="section-container">
+    <h2>📊 Reports</h2>
+    <h3>Low Stock Items (Stock < 15)</h3>
+    <table class="reports-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Item Name</th>
+                <th>Category</th>
+                <th>Stock Count</th>
+            </tr>
+        </thead>
+        <tbody id="lowStockList"></tbody>
+    </table>
+</div>
+
+<script>
+function logout() {
+    sessionStorage.removeItem("loggedIn");
+    window.location.href = "login.html";
+}
+
+// ✅ Retrieve items from localStorage
+let items = JSON.parse(localStorage.getItem("inventoryItems")) || [];
+
+function renderLowStockItems() {
+    const tableBody = document.getElementById("lowStockList");
+    tableBody.innerHTML = "";
+    
+    // ✅ Fix: Use `stockCount` instead of `stock`
+    const lowStockItems = items.filter(item => item.stockCount < 15);
+
+    lowStockItems.forEach((item, index) => {
+        const row = `<tr>
+                        <td>${index + 1}</td>
+                        <td>${item.name}</td>
+                        <td>${item.category}</td>
+                        <td>${item.stockCount}</td>
+                    </tr>`;
+        tableBody.innerHTML += row;
+    });
+}
+
+document.addEventListener("DOMContentLoaded", renderLowStockItems);
+</script>
+
+</body>
+</html>
