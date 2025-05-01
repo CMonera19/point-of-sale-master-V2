@@ -56,7 +56,7 @@ function logout() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    let items = JSON.parse(localStorage.getItem("inventoryItems")) || []; // Fetch stored items
+    let items = JSON.parse(localStorage.getItem("inventoryItems")) || []; // kuha sa stored items
 
     function updateDashboard() {
         const totalProducts = items.length;

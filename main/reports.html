@@ -47,14 +47,13 @@ function logout() {
     window.location.href = "login.html";
 }
 
-// ✅ Retrieve items from localStorage
+// kuhag items sa Storage
 let items = JSON.parse(localStorage.getItem("inventoryItems")) || [];
 
 function renderLowStockItems() {
     const tableBody = document.getElementById("lowStockList");
     tableBody.innerHTML = "";
     
-    // ✅ Fix: Use `stockCount` instead of `stock`
     const lowStockItems = items.filter(item => item.stockCount < 15);
 
     lowStockItems.forEach((item, index) => {

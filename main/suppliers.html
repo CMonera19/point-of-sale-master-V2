@@ -1,98 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Suppliers</title>
     <script>
       if (sessionStorage.getItem("loggedIn") !== "true") {
-          window.location.href = "login.html";
+        window.location.href = "login.html";
       }
     </script>
-    <link rel="stylesheet" href="../main/css/suppplier.css">
-</head>
-<body>
-
-<div class="sidebar">
-    <h2>Inventory System</h2>
-    <a href="../main/index.html">Home</a>
-    <a href="../main/user.html">User</a>
-    <a href="../main/suppliers.html">Suppliers</a>
-    <a href="../main/items_prices.html">Items/Prices</a>
-    <a href="../main/dashboard.html">Dashboard</a>
-    <a href="../main/products.html">Products</a>
-    <a href="../main/reports.html">Reports</a>
-    <button onclick="logout()" class="logout-btn">🚪 Logout</button>
-</div>
-
-<div id="suppliers" class="section-container">
-    <div class="suppliers-header">
-        <h2>🚚 Manage Suppliers</h2>
-        <button class="add-supplier-btn" onclick="addSupplier()">+ Add Supplier</button>
-        <script>
-          function logout() {
-            sessionStorage.removeItem("loggedIn");
-            window.location.href = "login.html";
-          }
-        </script>
+    <link rel="stylesheet" href="../main/css/suppplier.css" />
+  </head>
+  <body>
+    <div class="sidebar">
+      <h2>Inventory System</h2>
+      <a href="../main/index.html">Home</a>
+      <a href="../main/user.html">User</a>
+      <a href="../main/suppliers.html">Suppliers</a>
+      <a href="../main/items_prices.html">Items/Prices</a>
+      <a href="../main/dashboard.html">Dashboard</a>
+      <a href="../main/products.html">Products</a>
+      <a href="../main/reports.html">Reports</a>
+      <button onclick="logout()" class="logout-btn">🚪 Logout</button>
     </div>
-  
-    <table class="supplier-table">
+
+    <div id="suppliers" class="section-container">
+      <div class="suppliers-header">
+        <h2>🚚 Manage Suppliers</h2>
+        <button class="add-supplier-btn" onclick="addSupplier()">
+          + Add Supplier
+        </button>
+      </div>
+
+      <table class="supplier-table">
         <thead>
-            <tr>
-                <th>#</th>
-                <th>Supplier Name</th>
-                <th>Contact</th>
-                <th>Products Supplied</th>
-                <th>Action</th>
-            </tr>
+          <tr>
+            <th>#</th>
+            <th>Supplier Name</th>
+            <th>Contact</th>
+            <th>Products Supplied</th>
+            <th>Action</th>
+          </tr>
         </thead>
-        <tbody id="supplierList">
-        </tbody>
-    </table>
-</div>
- 
-<script>
-let suppliers = JSON.parse(localStorage.getItem("suppliers")) || [];
+        <tbody id="supplierList"></tbody>
+      </table>
+    </div>
 
-function renderSuppliers() {
-    const tableBody = document.getElementById("supplierList");
-    tableBody.innerHTML = "";
-    suppliers.forEach((supplier, index) => {
-        const row = `<tr>
-                      <td>${index + 1}</td>
-                      <td>${supplier.name}</td>
-                      <td>${supplier.contact}</td>
-                      <td>${supplier.product}</td>
-                      <td><button class="delete-btn" onclick="removeSupplier(${index})">Remove</button></td>
-                    </tr>`;
-        tableBody.innerHTML += row;
-    });
-}
+    <script>
+      let suppliers = JSON.parse(localStorage.getItem("suppliers")) || [];
 
-function addSupplier() {
-    const name = prompt("Enter Supplier Name:");
-    const contact = prompt("Enter Contact Number:");
-    const product = prompt("Enter Product Supplied:");
-    if (name && contact && product) {
-        suppliers.push({ name, contact, product });
-        localStorage.setItem("suppliers", JSON.stringify(suppliers));
-        renderSuppliers();
-    } else {
-        alert("All fields are required!");
-    }
-}
+      function renderSuppliers() {
+        const tableBody = document.getElementById("supplierList");
+        tableBody.innerHTML = "";
+        suppliers.forEach((supplier, index) => {
+          const row = `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${supplier.name}</td>
+                <td>${supplier.contact}</td>
+                <td>${supplier.product}</td>
+                <td>
+                    <button onclick="editSupplier(${index})">Edit</button>
+                    <button class="delete-btn" onclick="removeSupplier(${index})">Remove</button>
+                </td>
+            </tr>`;
+          tableBody.innerHTML += row;
+        });
+      }
 
-function removeSupplier(index) {
-    if (confirm("Are you sure you want to remove this supplier?")) {
-        suppliers.splice(index, 1);
-        localStorage.setItem("suppliers", JSON.stringify(suppliers));
-        renderSuppliers();
-    }
-}
+      function addSupplier() {
+        const name = prompt("Enter Supplier Name:");
+        const contact = prompt("Enter Contact Number:");
+        const product = prompt("Enter Product Supplied:");
+        if (name && contact && product) {
+          suppliers.push({ name, contact, product });
+          localStorage.setItem("suppliers", JSON.stringify(suppliers));
+          renderSuppliers();
+        } else {
+          alert("All fields are required!");
+        }
+      }
 
-document.addEventListener("DOMContentLoaded", renderSuppliers);
-</script>
+      function editSupplier(index) {
+        const supplier = suppliers[index];
+        const name = prompt("Edit Supplier Name:", supplier.name);
+        const contact = prompt("Edit Contact Number:", supplier.contact);
+        const product = prompt("Edit Product Supplied:", supplier.product);
 
-</body>
+        if (name && contact && product) {
+          suppliers[index] = { name, contact, product };
+          localStorage.setItem("suppliers", JSON.stringify(suppliers));
+          renderSuppliers();
+        } else {
+          alert("All fields are required!");
+        }
+      }
+
+      function removeSupplier(index) {
+        if (confirm("Are you sure you want to remove this supplier?")) {
+          suppliers.splice(index, 1);
+          localStorage.setItem("suppliers", JSON.stringify(suppliers));
+          renderSuppliers();
+        }
+      }
+
+      function logout() {
+        sessionStorage.removeItem("loggedIn");
+        window.location.href = "login.html";
+      }
+
+      document.addEventListener("DOMContentLoaded", renderSuppliers);
+    </script>
+  </body>
 </html>

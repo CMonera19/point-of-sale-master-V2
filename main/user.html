@@ -1,94 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Users</title>
     <script>
-        if (sessionStorage.getItem("loggedIn") !== "true") {
-            window.location.href = "login.html";
-        }
+      if (sessionStorage.getItem("loggedIn") !== "true") {
+        window.location.href = "login.html";
+      }
     </script>
-    <link rel="stylesheet" href="../main/css/user.css">
-</head>
-<body>
+    <link rel="stylesheet" href="../main/css/user.css" />
+  </head>
+  <body>
+    <div class="sidebar">
+      <h2>Inventory System</h2>
+      <a href="../main/index.html">Home</a>
+      <a href="../main/user.html">User</a>
+      <a href="../main/suppliers.html">Suppliers</a>
+      <a href="../main/items_prices.html">Items/Prices</a>
+      <a href="../main/dashboard.html">Dashboard</a>
+      <a href="../main/products.html">Products</a>
+      <a href="../main/reports.html">Reports</a>
+      <button onclick="logout()" class="logout-btn">🚪 Logout</button>
+    </div>
 
-<div class="sidebar">
-    <h2>Inventory System</h2>
-    <a href="../main/index.html">Home</a>
-    <a href="../main/user.html">User</a>
-    <a href="../main/suppliers.html">Suppliers</a>
-    <a href="../main/items_prices.html">Items/Prices</a>
-    <a href="../main/dashboard.html">Dashboard</a>
-    <a href="../main/products.html">Products</a>
-    <a href="../main/reports.html">Reports</a>
-    <button onclick="logout()" class="logout-btn">🚪 Logout</button>
-</div>
-
-<div class="main-content">
-    <div class="users-header">
+    <div class="main-content">
+      <div class="users-header">
         <h2>👥 Manage Users</h2>
         <button class="add-user-btn" onclick="addUser()">+ Add User</button>
-    </div>
-    
-    <table class="user-table">
+      </div>
+
+      <table class="user-table">
         <thead>
-            <tr>
-                <th>#</th>
-                <th>Username</th>
-                <th>Role</th>
-                <th>Action</th>
-            </tr>
+          <tr>
+            <th>#</th>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Action</th>
+          </tr>
         </thead>
-        <tbody id="userList">
-        </tbody>
-    </table>
-</div>
+        <tbody id="userList"></tbody>
+      </table>
+    </div>
 
-<script>
-let users = JSON.parse(localStorage.getItem("users")) || [];
+    <script>
+      let users = JSON.parse(localStorage.getItem("users")) || [];
 
-function renderUsers() {
-    const tableBody = document.getElementById("userList");
-    tableBody.innerHTML = "";
-    users.forEach((user, index) => {
-        const row = `<tr>
+      function renderUsers() {
+        const tableBody = document.getElementById("userList");
+        tableBody.innerHTML = "";
+        users.forEach((user, index) => {
+          const row = `<tr>
                       <td>${index + 1}</td>
                       <td>${user.username}</td>
                       <td>${user.role}</td>
-                      <td><button class="delete-btn" onclick="removeUser(${index})">Remove</button></td>
+                      <td>
+                        <button class="edit-btn" onclick="editUser(${index})">Edit</button>
+                        <button class="delete-btn" onclick="removeUser(${index})">Remove</button>
+                      </td>
                     </tr>`;
-        tableBody.innerHTML += row;
-    });
-}
+          tableBody.innerHTML += row;
+        });
+      }
 
-function addUser() {
-    const username = prompt("Enter Username:");
-    const role = prompt("Enter Role (e.g., Administrator, Staff):");
-    if (username && role) {
-        users.push({ username, role });
-        localStorage.setItem("users", JSON.stringify(users));
-        renderUsers();
-    } else {
-        alert("All fields are required!");
-    }
-}
+      function addUser() {
+        const username = prompt("Enter Username:");
+        const role = prompt("Enter Role (e.g., Administrator, Staff):");
+        if (username && role) {
+          users.push({ username, role });
+          localStorage.setItem("users", JSON.stringify(users));
+          renderUsers();
+        } else {
+          alert("All fields are required!");
+        }
+      }
 
-function removeUser(index) {
-    if (confirm("Are you sure you want to remove this user?")) {
-        users.splice(index, 1);
-        localStorage.setItem("users", JSON.stringify(users));
-        renderUsers();
-    }
-}
+      function editUser(index) {
+        const currentUser = users[index];
+        const newUsername = prompt("Edit Username:", currentUser.username);
+        const newRole = prompt("Edit Role:", currentUser.role);
 
-function logout() {
-    sessionStorage.removeItem("loggedIn");
-    window.location.href = "login.html";
-}
+        if (newUsername && newRole) {
+          users[index] = { username: newUsername, role: newRole };
+          localStorage.setItem("users", JSON.stringify(users));
+          renderUsers();
+        } else {
+          alert("Both username and role are required to update.");
+        }
+      }
 
-document.addEventListener("DOMContentLoaded", renderUsers);
-</script>
+      function removeUser(index) {
+        if (confirm("Are you sure you want to remove this user?")) {
+          users.splice(index, 1);
+          localStorage.setItem("users", JSON.stringify(users));
+          renderUsers();
+        }
+      }
 
-</body>
+      function logout() {
+        sessionStorage.removeItem("loggedIn");
+        window.location.href = "login.html";
+      }
+
+      document.addEventListener("DOMContentLoaded", renderUsers);
+    </script>
+  </body>
 </html>

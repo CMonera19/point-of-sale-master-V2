@@ -1,102 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Items & Prices</title>
     <script>
       if (sessionStorage.getItem("loggedIn") !== "true") {
-          window.location.href = "login.html";
+        window.location.href = "login.html";
       }
     </script>
-    <link rel="stylesheet" href="../main/css/items_prices.css">
-</head>
-<body>
+    <link rel="stylesheet" href="../main/css/items_prices.css" />
+  </head>
+  <body>
+    <div class="sidebar">
+      <h2>Inventory System</h2>
+      <a href="../main/index.html">Home</a>
+      <a href="../main/user.html">User</a>
+      <a href="../main/suppliers.html">Suppliers</a>
+      <a href="../main/items_prices.html">Items/Prices</a>
+      <a href="../main/dashboard.html">Dashboard</a>
+      <a href="../main/products.html">Products</a>
+      <a href="../main/reports.html">Reports</a>
+      <button onclick="logout()" class="logout-btn">🚪 Logout</button>
+    </div>
 
-<div class="sidebar">
-    <h2>Inventory System</h2>
-    <a href="../main/index.html">Home</a>
-    <a href="../main/user.html">User</a>
-    <a href="../main/suppliers.html">Suppliers</a>
-    <a href="../main/items_prices.html">Items/Prices</a>
-    <a href="../main/dashboard.html">Dashboard</a>
-    <a href="../main/products.html">Products</a>
-    <a href="../main/reports.html">Reports</a>
-    <button onclick="logout()" class="logout-btn">🚪 Logout</button>
-</div>
-
-<div id="items" class="section-container">
-    <div class="items-header">
+    <div id="items" class="section-container">
+      <div class="items-header">
         <h2>📦 Inventory Items</h2>
         <button class="add-item-btn" onclick="addItem()">+ Add Item</button>
-    </div>
-  
-    <table class="items-table">
+      </div>
+
+      <table class="items-table">
         <thead>
-            <tr>
-                <th>#</th>
-                <th>Item Name</th>
-                <th>Category</th>
-                <th>Quantity</th> <!-- Kept Quantity -->
-                <th>Stock Count</th> <!-- Added Stock Count -->
-                <th>Price</th>
-                <th>Action</th>
-            </tr>
+          <tr>
+            <th>#</th>
+            <th>Item Name</th>
+            <th>Category</th>
+            <th>Quantity</th>
+            <th>Stock Count</th>
+            <th>Price</th>
+            <th>Action</th>
+          </tr>
         </thead>
         <tbody id="itemList"></tbody>
-    </table>
-</div>
-  
-<script>
-function logout() {
-    sessionStorage.removeItem("loggedIn");
-    window.location.href = "login.html";
-}
+      </table>
+    </div>
 
-// Retrieve items from local storage or set an empty array
-let items = JSON.parse(localStorage.getItem("inventoryItems")) || [];
+    <script>
+      function logout() {
+        sessionStorage.removeItem("loggedIn");
+        window.location.href = "login.html";
+      }
 
-function renderItems() {
-    const tableBody = document.getElementById("itemList");
-    tableBody.innerHTML = "";
-    items.forEach((item, index) => {
-        const row = `<tr>
+      let items = JSON.parse(localStorage.getItem("inventoryItems")) || [];
+
+      function renderItems() {
+        const tableBody = document.getElementById("itemList");
+        tableBody.innerHTML = "";
+        items.forEach((item, index) => {
+          const row = `<tr>
                         <td>${index + 1}</td>
                         <td>${item.name}</td>
                         <td>${item.category}</td>
-                        <td>${item.quantity}</td> <!-- Display Quantity -->
-                        <td>${item.stockCount}</td> <!-- Display Stock Count -->
+                        <td>${item.quantity}</td>
+                        <td>${item.stockCount}</td>
                         <td>₱${item.price}</td>
-                        <td><button class="delete-btn" onclick="removeItem(${index})">Remove</button></td>
+                        <td>
+                            <button onclick="editItem(${index})">Edit</button>
+                            <button class="delete-btn" onclick="removeItem(${index})">Remove</button>
+                        </td>
                     </tr>`;
-        tableBody.innerHTML += row;
-    });
-    localStorage.setItem("inventoryItems", JSON.stringify(items));
-}
+          tableBody.innerHTML += row;
+        });
+        localStorage.setItem("inventoryItems", JSON.stringify(items));
+      }
 
-function addItem() {
-    const name = prompt("Enter Item Name:");
-    const category = prompt("Enter Item Category:");
-    const quantity = parseInt(prompt("Enter Quantity:"), 10);
-    const stockCount = parseInt(prompt("Enter Stock Count:"), 10);
-    const price = parseFloat(prompt("Enter Item Price:"));
+      function addItem() {
+        const name = prompt("Enter Item Name:");
+        const category = prompt("Enter Item Category:");
+        const quantity = parseInt(prompt("Enter Quantity:"), 10);
+        const stockCount = parseInt(prompt("Enter Stock Count:"), 10);
+        const price = parseFloat(prompt("Enter Item Price:"));
 
-    if (name && category && !isNaN(quantity) && !isNaN(stockCount) && !isNaN(price)) {
-        items.push({ name, category, quantity, stockCount, price });
-        renderItems();
-    } else {
-        alert("All fields are required and must be valid numbers!");
-    }
-}
+        if (
+          name &&
+          category &&
+          !isNaN(quantity) &&
+          !isNaN(stockCount) &&
+          !isNaN(price)
+        ) {
+          items.push({ name, category, quantity, stockCount, price });
+          renderItems();
+        } else {
+          alert("All fields are required and must be valid numbers!");
+        }
+      }
 
-function removeItem(index) {
-    if (confirm("Are you sure you want to remove this item?")) {
-        items.splice(index, 1);
-        renderItems();
-    }
-}
+      function editItem(index) {
+        const item = items[index];
+        const name = prompt("Edit Item Name:", item.name);
+        const category = prompt("Edit Item Category:", item.category);
+        const quantity = parseInt(prompt("Edit Quantity:", item.quantity), 10);
+        const stockCount = parseInt(
+          prompt("Edit Stock Count:", item.stockCount),
+          10
+        );
+        const price = parseFloat(prompt("Edit Price:", item.price));
 
-document.addEventListener("DOMContentLoaded", renderItems);
-</script>
-</body>
+        if (
+          name &&
+          category &&
+          !isNaN(quantity) &&
+          !isNaN(stockCount) &&
+          !isNaN(price)
+        ) {
+          items[index] = { name, category, quantity, stockCount, price };
+          renderItems();
+        } else {
+          alert("All fields must be filled out correctly.");
+        }
+      }
+
+      function removeItem(index) {
+        if (confirm("Are you sure you want to remove this item?")) {
+          items.splice(index, 1);
+          renderItems();
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", renderItems);
+    </script>
+  </body>
 </html>

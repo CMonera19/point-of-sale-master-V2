@@ -1,45 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login Page</title>
-    <link rel="stylesheet" href="../main/css/login.css">
+    <link rel="stylesheet" href="../main/css/login.css" />
     <script>
-        if (sessionStorage.getItem("loggedIn") === "true") {
-            window.location.href = "index.html";
-        }
+      if (sessionStorage.getItem("loggedIn") === "true") {
+        window.location.href = "index.html";
+      }
     </script>
-</head>
-<body>
+  </head>
+  <body>
     <div class="login-container">
-        <h2>Inventory Management Login</h2>
-        <form id="loginForm">
-            <input type="text" id="username" placeholder="Username" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <button type="submit">Log In</button>
-        </form>
-        <p>Forgot password? <a href="forgot-password.html">Click here</a></p>
-        <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+      <h2>Inventory Management Login</h2>
+      <form id="loginForm">
+        <input type="text" id="username" placeholder="Username" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button type="submit">Log In</button>
+      </form>
+      <p>Forgot password? <a href="forgot-password.html">Click here</a></p>
+      <p>Don't have an account? <a href="signup.html">Sign up</a></p>
     </div>
 
     <script>
-        document.getElementById("loginForm").addEventListener("submit", function(event) {
-            event.preventDefault();
-            
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
 
-            if (username === "Admin" && password === "awa1234") {
-                alert("Login successful!");
+          const username = document.getElementById("username").value.trim();
+          const password = document.getElementById("password").value.trim();
 
-                sessionStorage.setItem("loggedIn", "true");
+          let users = JSON.parse(localStorage.getItem("users")) || [];
 
-                window.location.href = "index.html";
-            } else {
-                alert("Invalid username or password");
-            }
+          if (username === "Admin" && password === "awa1234") {
+            alert("Tumpak!! Login successful!");
+            sessionStorage.setItem("loggedIn", "true");
+            sessionStorage.setItem("username", username);
+            sessionStorage.setItem("role", "Administrator");
+            window.location.href = "index.html";
+            return;
+          }
+
+          const foundUser = users.find(
+            (user) => user.username === username && user.password === password
+          );
+          if (foundUser) {
+            alert("Login successful!");
+
+            sessionStorage.setItem("loggedIn", "true");
+            sessionStorage.setItem("username", foundUser.username);
+            sessionStorage.setItem("role", foundUser.role || "User");
+
+            loadUserData(username);
+
+            window.location.href = "index.html";
+          } else {
+            alert("Invalid username or password");
+          }
         });
+
+      function loadUserData(username) {
+        let userData =
+          JSON.parse(localStorage.getItem(`userData_${username}`)) || {};
+        sessionStorage.setItem("userData", JSON.stringify(userData));
+      }
     </script>
-</body>
+  </body>
 </html>
